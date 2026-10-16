@@ -1,0 +1,25 @@
+# Operating system files
+.DS_Store
+._*
+Thumbs.db
+
+# Local editor settings and temporary files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+
+# Dependencies and generated test output
+node_modules/
+coverage/
+__pycache__/
+*.py[cod]
+
+# Runtime logs (keep logs.md tracked)
+*.log

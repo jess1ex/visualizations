@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>leftist heap merge</title>
+<style>
+body { font: 16px/1.5 system-ui, sans-serif; margin: 24px auto; padding: 0 20px; max-width: 1100px; color: #20252c; background: #fff; }
+h1 { margin-bottom: 8px; } button, select, input { font: inherit; } button, select { padding: 6px 10px; } button { cursor: pointer; } button:disabled { cursor: default; }
+.controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 16px 0; } #timeline { width: 100%; } #status { min-height: 3em; } .diagram { overflow: hidden; border: 1px solid #d5d9df; border-radius: 6px; } svg { display: block; width: 100%; height: clamp(220px, 48vh, 520px); } .note { color: #515c69; } #phase { font-weight: bold; } summary { cursor: pointer; } code { font-size: 0.95em; }
+</style>
+</head>
+<body>
+<a href="../index.html">← All visualizations</a>
+<h1>leftist heap merge</h1>
+<p>Merge the right paths, then restore the leftist property from the bottom up.</p>
+<div class="controls">
+<label>Nodes per heap <select id="size"><option>4</option><option selected>7</option><option>10</option><option>14</option></select></label>
+<button id="generate">Generate two random heaps</button>
+</div>
+<div class="controls">
+<button id="start" aria-label="Go to first step">↤ Start</button><button id="previous">Previous</button><button id="play">Play</button><button id="next">Next step</button>
+<label>Speed <select id="speed"><option value="2000">0.5×</option><option value="1000" selected>1×</option><option value="500">2×</option><option value="250">4×</option></select></label>
+</div>
+<label for="timeline">Step <output id="position"></output> · <span id="phase"></span></label>
+<input id="timeline" type="range" min="0" max="1" value="0" step="1">
+<p id="status" aria-live="polite"></p>
+<div class="diagram"><svg id="trees" role="img" aria-labelledby="tree-title tree-description"></svg></div>
+<p class="note">Each node shows its value and rank. A/B identify the original heap. L/R mark child edges. Trees scale to fit the screen. Orange rings mark the current operation; dashed rings mean the rank is pending repair.</p>
+<details><summary>How the merge works</summary>
+<p>A min-leftist heap has two rules: each parent is no larger than its children, and <code>rank(left) ≥ rank(right)</code>. Here an empty subtree has rank 0 and a leaf has rank 1; otherwise <code>rank(node) = 1 + min(rank(left), rank(right))</code>.</p>
+<ol><li>Choose the smaller current root and append it to the merged right path. Its left subtree stays attached. Repeat until one right path ends, then attach the remainder.</li><li>Walk back up the merged path. Check the child ranks, swap children if the left rank is smaller, then update the node's rank. Each action is its own step.</li></ol>
+<p>The intermediate tree can temporarily violate the leftist property. Dashed nodes retain their old ranks until the update step. Selecting the smaller root is distinct from swapping a node’s children.</p>
+</details>
+<script src="heap.js"></script><script src="app.js"></script>
+</body>
+</html>
