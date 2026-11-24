@@ -8,3 +8,7 @@
 - Required directory back links for future simulations; made the existing link work explicitly from disk. Highlighted the merged right spine in green while preserving orange operation rings.
 - Corrected spine highlighting: retain the pre-swap merged path by node identity so its bends remain visible through repair and in the final heap.
 - Added .gitignore for local/editor/generated files, .nojekyll for static hosting, and GitHub Pages setup instructions in README.md.
+
+## 2026-11-07
+- Added quicksort to the main index with animated array swaps, a recursive call tree, and a seekable timeline. Verified partition, swap, and recursion invariants with the Node test suite.
+- Added the hash table collision visualization and tested probe order, wraparound, full tables, and duplicate keys.

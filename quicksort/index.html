@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quicksort visualization</title>
+<style>
+body { font: 1rem/1.5 system-ui, sans-serif; max-width: 58rem; margin: 2rem auto; padding: 0 1rem; color: #17233c; }
+form, .controls { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+input, select, button { font: inherit; }
+#values { width: min(25rem, 100%); }
+#timeline { width: 100%; }
+#array { display: grid; grid-template-columns: repeat(auto-fit, minmax(3rem, 1fr)); gap: .4rem; padding: 1.8rem 0; list-style: none; }
+#array li { text-align: center; min-width: 0; }
+.tile { position: relative; display: block; padding: .35rem .1rem; background: #eef2f8; border: 2px solid transparent; border-radius: .4rem; overflow-wrap: anywhere; }
+.in-range { background: #dceafa; }
+.fixed { background: #d4f3dd; }
+.pivot { border-color: #6936ac; }
+.marked { outline: 2px solid #a94d09; }
+small { display: block; }
+#calls ul { padding-inline-start: 1rem; }
+#calls li { margin-block: .25rem; }
+[aria-current="step"] { font-weight: bold; background: #ffebcf; }
+#message { min-height: 3em; }
+</style>
+<script defer src="sort.js"></script>
+<script defer src="app.js"></script>
+</head>
+<body>
+<a href="../index.html">← All visualizations</a>
+<h1>Quicksort</h1>
+<p>Partition the array around a pivot, then recursively sort the ranges on either side.</p>
+<form id="input">
+  <label for="values">Values</label>
+  <input id="values" value="8, 3, 7, 4, 9, 2, 6, 5" required aria-describedby="input-help">
+  <button type="submit">Load array</button>
+  <button type="button" id="random">Random array</button>
+</form>
+<p id="input-help">Enter 1–12 comma-separated integers from −999 to 999.</p>
+<div class="controls">
+  <button id="start">Start</button>
+  <button id="previous">Previous</button>
+  <button id="play">Play</button>
+  <button id="next">Next</button>
+  <label>Speed <select id="speed"><option value="2000">0.5×</option><option value="1000" selected>1×</option><option value="500">2×</option><option value="250">4×</option></select></label>
+</div>
+<label for="timeline">Timeline <output id="position"></output></label>
+<input id="timeline" type="range" min="0" step="1" value="0">
+<p id="message" role="status"></p>
+<h2>Array</h2>
+<ol id="array" role="list"></ol>
+<p>Blue marks the active range, purple outlines the pivot, orange marks compared or swapped positions, and green marks values in their final positions.</p>
+<h2>Recursive calls</h2>
+<p>Each call shows its inclusive, zero-based bounds. Calls appear when entered and remain visible after returning.</p>
+<ul id="calls"></ul>
+<h2>Partition rule</h2>
+<p>Use the rightmost value as pivot. Scan left to right, swapping values less than or equal to the pivot into the left region. Then move the pivot between the two regions. The regions may still be unsorted until their recursive calls return.</p>
+</body>
+</html>

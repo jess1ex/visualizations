@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hash table collisions</title>
+<style>
+body { font: 1rem/1.5 system-ui, sans-serif; max-width: 48rem; margin: 2rem auto; padding: 0 1rem; color: #17233c; }
+form, .controls { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; }
+input, select, button { font: inherit; }
+#keys { width: min(22rem, 100%); }
+#timeline { width: 100%; }
+table { border-collapse: collapse; width: 100%; text-align: left; }
+th, td { padding: .45rem .75rem; border-bottom: 1px solid #ccd6e5; }
+tr[data-visited] { background: #e9f1fb; }
+tr[aria-current] { background: #ffebcf; }
+tr[data-inserted] { background: #d4f3dd; }
+.key { display: inline-block; background: white; border: 1px solid #8595ad; border-radius: .35rem; padding: 0 .4rem; margin-block: .1rem; }
+#message { min-height: 3em; }
+</style>
+<script defer src="hash.js"></script>
+<script defer src="app.js"></script>
+</head>
+<body>
+<a href="../index.html">← All visualizations</a>
+<h1>Hash table collisions</h1>
+<p>Insert the same keys using different collision strategies. All three modes start at bucket <code>h₁(k) = k mod 7</code>.</p>
+<p><label for="mode">Collision strategy</label>
+<select id="mode">
+  <option value="chaining">Separate chaining</option>
+  <option value="linear">Linear probing</option>
+  <option value="double">Double hashing</option>
+</select></p>
+<p id="rule"></p>
+<form id="input">
+  <label for="keys">Keys</label>
+  <input id="keys" value="10, 17, 24, 3, 31, 8, 15, 22" required aria-describedby="help">
+  <button type="submit">Load keys</button>
+</form>
+<p id="help">Enter 1–15 comma-separated integers from −999 to 999. Duplicate keys are kept once.</p>
+<div class="controls">
+  <button id="start">Start</button>
+  <button id="previous">Previous</button>
+  <button id="play">Play</button>
+  <button id="next">Next</button>
+  <label>Speed <select id="speed"><option value="1600">0.5×</option><option value="800" selected>1×</option><option value="400">2×</option></select></label>
+</div>
+<label for="timeline">Timeline <output id="position"></output></label>
+<input id="timeline" type="range" min="0" step="1" value="0">
+<p id="message" role="status"></p>
+<p id="probes"></p>
+<table>
+  <caption>Hash table with seven buckets</caption>
+  <thead><tr><th scope="col">Bucket</th><th scope="col">Contents</th><th scope="col">Current key’s visit</th></tr></thead>
+  <tbody id="buckets"></tbody>
+</table>
+</body>
+</html>
