@@ -12,3 +12,8 @@
 ## 2026-11-07
 - Added quicksort to the main index with animated array swaps, a recursive call tree, and a seekable timeline. Verified partition, swap, and recursion invariants with the Node test suite.
 - Added the hash table collision visualization and tested probe order, wraparound, full tables, and duplicate keys.
+
+## 2026-11-24
+- Added the Schwarz–Christoffel visualization with linked prevertices and corners, editable parameters, and numerical boundary integration. Verified square geometry, complex constants, the angle at infinity, and invalid inputs with the Node test suite.
+- Simplified the Schwarz–Christoffel layout and added fraction-of-π input for the C₁ argument. Verified fraction parsing and invalid inputs with Node tests.
+- Added a five-step Schwarz–Christoffel problem-solving guide below the equation.

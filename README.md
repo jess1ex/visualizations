@@ -12,6 +12,8 @@ For an HTTP preview, run `python3 -m http.server 8000` from this folder and visi
 
 - **hash table collisions** — load up to 15 integer keys, select chaining, linear probing, or double hashing, and step through insertions into seven buckets. Changing the strategy replays the loaded keys from an empty table.
 
+- **Schwarz–Christoffel transformation** — open `schwarz-christoffel/index.html` directly or follow the main index. Select a label on either graph to highlight its partner and read its coordinates and angle. Use **+ Add / edit** to add or remove finite prevertices, set their angles in units of π, and edit the constants or base prevertex. Enter the argument of C₁ in units of π, such as `1/2` or `0.5` for π/2. The example starts with a square. The last prevertex is at infinity and its angle follows from the polygon angle sum. The plotted corners use numerical boundary integration. The editor accepts 2–10 finite prevertices and angles from 0.05π to 1.95π, and checks the computed boundary for self-intersections.
+
 Run algorithm checks with `node --test tests/*.test.js`.
 
 See `projectoverview.md` for architecture and `AGENTS.md` for contribution conventions.

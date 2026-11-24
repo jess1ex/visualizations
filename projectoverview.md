@@ -11,6 +11,7 @@ A continually growing collection of small, interactive learning tools for differ
   - `app.js`: SVG trees, timeline, and playback.
 - `quicksort/`: array and recursion tree visualization, with a standalone step generator in `sort.js`.
 - `hash-table-collisions/`: collision strategy comparison with seekable insertion snapshots in `hash.js`.
+- `schwarz-christoffel/`: linked complex-plane plots with numerical boundary integration in `map.js`.
 - `tests/`: algorithm checks using Node's built-in test runner.
 - `AGENTS.md`: instructions for future contributors and coding agents.
 - `README.md`: getting started.
@@ -33,6 +34,10 @@ Uses inclusive, zero-based ranges and Lomuto partitioning. The rightmost item is
 ## Hash table collisions
 
 Uses seven buckets and nonnegative modular arithmetic. Chaining appends to the home bucket. Linear probing advances by one, and double hashing uses a stride of 1 + (key mod 6). The prime capacity lets every possible stride visit all buckets. Duplicate keys are skipped, and open addressing reports a full table after seven unsuccessful probes.
+
+## Schwarz–Christoffel transformation
+
+The input graph shades the upper half-plane and marks the ordered finite prevertices and their shared endpoint at infinity. The output graph shades the numerically integrated polygon. Matching labels link prevertices to corners. The editor applies changes to angles, prevertices, and the complex constants, with the angle at infinity derived from the angle sum. Boundary integration uses the limiting phase from the upper half-plane on each real interval.
 
 ## Future additions
 

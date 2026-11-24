@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Schwarz–Christoffel transformation</title>
+  <style>
+    body { font: 1rem/1.5 system-ui, sans-serif; max-width: 56rem; margin: 2rem auto; padding: 0 1rem; }
+    .graphs, .controls, #fields, form:not([hidden]) { display: flex; flex-wrap: wrap; gap: .75rem; }
+    .graphs section { flex: 1 1 19rem; min-width: 0; }
+    h2 span { font-size: .85rem; font-weight: normal; }
+    .plot { position: relative; aspect-ratio: 400 / 280; }
+    svg { display: block; width: 100%; height: 100%; }
+    svg line { stroke: #555; }
+    svg text { font-size: 14px; }
+    .domain, polygon { fill: #d9eaf7; }
+    polygon { stroke: #21618a; stroke-width: 2; }
+    button, input, select { font: inherit; }
+    .point { position: absolute; transform: translate(-50%, -50%); font-size: .75rem; }
+    .point[aria-pressed="true"] { background: #21618a; color: white; z-index: 1; }
+    .point:focus-visible { z-index: 2; }
+    form { margin-top: .75rem; align-items: end; }
+    label { display: grid; }
+    input { width: 8rem; }
+    #angle-hint { flex-basis: 100%; }
+  </style>
+  <script defer src="map.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+<main>
+  <a class="back" href="../index.html">← All visualizations</a>
+  <h1>Schwarz–Christoffel transformation</h1>
+  <p>Choose a point on either graph to see its match.</p>
+  <div class="graphs">
+    <section aria-labelledby="input-title">
+      <h2 id="input-title">Input <span>z-plane</span></h2>
+      <div class="plot" id="input"></div>
+    </section>
+    <section aria-labelledby="output-title">
+      <h2 id="output-title">Output <span>w-plane</span></h2>
+      <div class="plot" id="output"></div>
+    </section>
+  </div>
+  <p id="selection" role="status"></p>
+  <div class="controls">
+    <button id="add" type="button" aria-expanded="false" aria-controls="editor">+ Add / edit</button>
+    <button id="reset" type="button">Reset</button>
+  </div>
+  <form id="editor" hidden>
+    <label>Parameter <select id="parameter"></select></label>
+    <div id="fields"></div>
+    <button type="submit" id="apply">Apply</button>
+    <button type="button" id="remove" hidden>Remove point</button>
+    <small id="angle-hint">Changing a finite angle also changes the angle at ∞.</small>
+  </form>
+  <p id="error" role="alert" hidden></p>
+  <section class="equation" aria-labelledby="equation-title">
+    <h2 id="equation-title">The equation</h2>
+    <math display="block" aria-label="f of z equals C one times the integral from z zero to z of the product from k equals one to n minus one of zeta minus x k to the alpha k minus one, d zeta, plus C two">
+      <mi>f</mi><mo>(</mo><mi>z</mi><mo>)</mo><mo>=</mo><msub><mi>C</mi><mn>1</mn></msub>
+      <msubsup><mo>∫</mo><msub><mi>z</mi><mn>0</mn></msub><mi>z</mi></msubsup>
+      <munderover><mo>∏</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></munderover>
+      <msup><mrow><mo>(</mo><mi>ζ</mi><mo>−</mo><msub><mi>x</mi><mi>k</mi></msub><mo>)</mo></mrow><mrow><msub><mi>α</mi><mi>k</mi></msub><mo>−</mo><mn>1</mn></mrow></msup>
+      <mi>d</mi><mi>ζ</mi><mo>+</mo><msub><mi>C</mi><mn>2</mn></msub>
+    </math>
+    <dl>
+      <dt><var>z</var>, <var>ζ</var></dt><dd><var>z</var> is the input point and <var>ζ</var> is the integration variable.</dd>
+      <dt><var>x</var><sub>k</sub>, <var>n</var></dt><dd>Each finite prevertex <var>x</var><sub>k</sub> lies on the real axis. The <var>n</var>th prevertex is at ∞.</dd>
+      <dt><var>α</var><sub>k</sub></dt><dd>The interior angle at corner <var>k</var> is <var>α</var><sub>k</sub>π. The angle at ∞ follows from the polygon’s angle sum.</dd>
+      <dt><var>C</var><sub>1</sub></dt><dd>A complex multiplier. Its magnitude scales the polygon and its argument rotates it. Enter the argument in units of π.</dd>
+      <dt><var>z</var><sub>0</sub>, <var>C</var><sub>2</sub></dt><dd>The integral starts at <var>z</var><sub>0</sub>. Its image is <var>C</var><sub>2</sub>, which translates the polygon.</dd>
+    </dl>
+  </section>
+  <section aria-labelledby="solve-title">
+    <h2 id="solve-title">How to solve a Schwarz–Christoffel problem</h2>
+    <ol>
+      <li>Label the polygon vertices counterclockwise, starting wherever is convenient.</li>
+      <li>Assign the corresponding prevertices in increasing real-axis order. In this visualization, the last prevertex is at ∞.</li>
+      <li>Write the derivative using the interior angles. An angle of <var>α</var><sub>k</sub>π gives an exponent of <var>α</var><sub>k</sub> − 1 at each finite prevertex.</li>
+      <li>Choose <var>C</var><sub>1</sub> so one edge points in the correct direction and has the correct length.</li>
+      <li>Choose the additive constant <var>C</var><sub>2</sub> so one vertex lands at its required coordinate.</li>
+    </ol>
+  </section>
+</main>
+</body>
+</html>
