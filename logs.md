@@ -17,3 +17,6 @@
 - Added the Schwarz–Christoffel visualization with linked prevertices and corners, editable parameters, and numerical boundary integration. Verified square geometry, complex constants, the angle at infinity, and invalid inputs with the Node test suite.
 - Simplified the Schwarz–Christoffel layout and added fraction-of-π input for the C₁ argument. Verified fraction parsing and invalid inputs with Node tests.
 - Added a five-step Schwarz–Christoffel problem-solving guide below the equation.
+
+## 2026-11-26
+- Added skew heap merge with animated root exchanges, detachments, reattachments, and child swaps. Verified heap order, node preservation, tie handling, and the terminal case with Node tests.

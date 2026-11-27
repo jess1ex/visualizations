@@ -8,7 +8,8 @@ A continually growing collection of small, interactive learning tools for differ
 - `leftist-heap-merge/`: min-leftist heap merge visualization.
   - `index.html`: controls, explanation, and diagram surface.
   - `heap.js`: heap generation, merge, and immutable step snapshots; browser/Node compatible.
-  - `app.js`: SVG trees, timeline, and playback.
+- `skew-heap-merge/`: min-skew heap algorithm, step snapshots, and controls.
+- `heap-view.js`: shared SVG tree layout, animation, timeline, and playback.
 - `quicksort/`: array and recursion tree visualization, with a standalone step generator in `sort.js`.
 - `hash-table-collisions/`: collision strategy comparison with seekable insertion snapshots in `hash.js`.
 - `schwarz-christoffel/`: linked complex-plane plots with numerical boundary integration in `map.js`.
@@ -26,6 +27,10 @@ First merge the right paths while preserving attached left subtrees. Then repair
 The merged right spine grows in green during merging, then its node identities are frozen before repair. Those same nodes and their connecting edges stay green as swaps bend the path, including in the final heap. Orange operation highlights take precedence.
 
 Controls: random generation, heap size, previous/next, start, play/pause, playback speed, and timeline slider. Diagrams scale to the viewport with a stable canvas across steps. Identity-based node motion carries attached edges; child swaps use opposing subtree arcs. Scrubbing is instant, interrupted animations resume from visible positions, and reduced-motion preferences disable animation.
+
+## Skew heap merge
+
+The second argument wins equal-root comparisons. A chosen root with an empty right child attaches the other heap on the right and returns. Every recursive call with a nonempty right child records detachment, recursive merge, reattachment, and the child swap. Snapshots keep detached subtrees visible and use stable node identities for animation and seeking.
 
 ## Quicksort
 

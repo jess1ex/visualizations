@@ -8,6 +8,8 @@ For an HTTP preview, run `python3 -m http.server 8000` from this folder and visi
 
 - **leftist heap merge** — generate two heaps, merge their right paths, and step through child swaps and rank updates. Use Previous/Next or drag the timeline; Play runs at the selected speed. Play at the end replays the same heaps.
 
+- **skew heap merge** — open `skew-heap-merge/index.html` or follow the main index. Step through root comparisons, argument exchanges, right-subtree detachments, attachments, and child swaps. The second argument wins ties. A root with no right child attaches the other heap on the right and returns immediately. Use Play or drag the timeline to revisit any step.
+
 - **quicksort** — enter 1–12 comma-separated integers or generate a random array. Follow comparisons, animated swaps, and recursive calls with Previous/Next, Play, or the timeline. The partition uses the rightmost pivot and groups equal values on its left.
 
 - **hash table collisions** — load up to 15 integer keys, select chaining, linear probing, or double hashing, and step through insertions into seven buckets. Changing the strategy replays the loaded keys from an empty table.

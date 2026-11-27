@@ -1,4 +1,6 @@
 const $ = id => document.getElementById(id);
+const skew = Boolean(window.SkewHeap);
+const heap = window.SkewHeap || window.LeftistHeap;
 let steps = [], position = 0, timer = null;
 const ns = 'http://www.w3.org/2000/svg';
 function element(tag, attrs, text) {
@@ -27,7 +29,15 @@ function layout(step) {
   for (const root of step.roots) {
     const begin = cursor;
     visit(root, 0);
-    labels.push({x:48 + (begin + cursor - 1) * 31, text:step === steps[0] || step === steps[1] ? `Heap ${root.id[0]}` : labels.length === 0 ? 'Merged path / result' : 'Remaining'});
+    let text = step === steps[0] || step === steps[1] ? `Heap ${root.id[0]}` : labels.length === 0 ? 'Merged path / result' : 'Remaining';
+    if (skew) {
+      const argument = ['Compare roots', 'Exchange heaps'].includes(step.phase) ? step.active.indexOf(root.id) : -1;
+      if (argument >= 0) text = argument === 0 ? 'h' : 'h′';
+      else if (step.phase === 'Start') text = `Heap ${root.id[0]}`;
+      else if (step.phase === 'Done') text = 'Merged heap';
+      else text = step.pending.includes(root.id) ? 'Waiting' : '';
+    }
+    labels.push({x:48 + (begin + cursor - 1) * 31, text});
     cursor++;
   }
   return {nodes, edges, labels, width:Math.max(400,cursor*62+34), height:Math.max(300,maxDepth*82+175)};
@@ -39,10 +49,10 @@ function draw(step, animate = true) {
   scene.nodes.forEach(n => n.x += offset);
   scene.labels.forEach(n => n.x += offset);
   svg.setAttribute('viewBox', `0 0 ${sceneWidth} ${sceneHeight}`);
-  svg.replaceChildren(element('title',{id:'tree-title'},'Leftist heap merge'),element('desc',{id:'tree-description'},step.message));
+  svg.replaceChildren(element('title',{id:'tree-title'},skew ? 'Skew heap merge' : 'Leftist heap merge'),element('desc',{id:'tree-description'},step.message));
   const arcs = new Map();
   // Entire subtrees take opposite arcs, keeping their structure recognizable.
-  const swap = step.phase === 'Swap children' ? step : previousStep?.phase === 'Swap children' && step.phase === 'Check children' ? previousStep : null;
+  const swap = step.phase === 'Swap children' ? step : previousStep?.phase === 'Swap children' && ['Check children', 'Attach recursive result'].includes(step.phase) ? previousStep : null;
   if (swap) {
     function mark(n, direction) { if (!n) return; arcs.set(n.id,direction); mark(n.left,direction); mark(n.right,direction); }
     function find(n) {
@@ -52,28 +62,39 @@ function draw(step, animate = true) {
     }
     swap.roots.forEach(find);
   }
-  // Identity-based: the pre-swap spine stays highlighted as it bends.
   const spine = new Set(step.spine);
   const from = new Map(displayed);
-  const edgeViews = scene.edges.map(edge => {
+  const duration = animate && from.size && !reducedMotion.matches ? Math.min(700,Number($('speed').value)*0.8) : 0;
+  const edgeKey = edge => `${edge.a.node.id}/${edge.b.node.id}`;
+  const animateEdges = skew && duration && previousStep;
+  const priorEdges = animateEdges ? layout(previousStep).edges : [];
+  const priorKeys = new Set(priorEdges.map(edgeKey));
+  const currentKeys = new Set(scene.edges.map(edgeKey));
+  const removedEdges = priorEdges.filter(edge => !currentKeys.has(edgeKey(edge)));
+  const edgeViews = [...scene.edges, ...removedEdges].map(edge => {
+    const key = edgeKey(edge);
+    const removed = !currentKeys.has(key);
+    const added = animateEdges && !priorKeys.has(key);
+    const changed = removed || step.edge?.join('/') === key;
     const onSpine = spine.has(edge.a.node.id) && spine.has(edge.b.node.id);
-    const line = element('line',{stroke:onSpine?'#16804a':'#89929d','stroke-width':onSpine?4:2});
+    const line = element('line',{stroke:changed?'#a84a00':onSpine?'#16804a':'#89929d','stroke-width':changed||onSpine?4:2,'stroke-dasharray':removed?'5 4':'none'});
     const label = element('text',{'text-anchor':'middle',fill:'#515c69','font-size':12},edge.label);
     svg.append(line,label);
-    return {...edge,line,labelElement:label};
+    return {...edge,line,labelElement:label,removed,added};
   });
   for (const l of scene.labels) svg.append(element('text',{x:l.x,y:28,'text-anchor':'middle',fill:'#515c69','font-size':14},l.text));
   const views = scene.nodes.map(({node:n}) => {
     const active = step.active.includes(n.id), pending = step.pending.includes(n.id);
-    const g = element('g',{'aria-label':`${n.id}: value ${n.key}, rank ${n.rank}${pending?', rank pending':''}`});
-    g.append(element('title',{},`${n.id}: value ${n.key}, rank ${n.rank}${pending?' (pending repair)':''}`));
+    const description = skew ? `${n.id}: value ${n.key}${pending ? ' (waiting for recursive result)' : ''}` :
+      `${n.id}: value ${n.key}, rank ${n.rank}${pending ? ' (pending repair)' : ''}`;
+    const g = element('g',{'aria-label':description});
+    g.append(element('title',{},description));
     g.append(element('circle',{r:23,fill:spine.has(n.id)?'#dcf5e5':n.id.startsWith('A')?'#eaf3ff':'#f0ecfa',stroke:active?'#a84a00':spine.has(n.id)?'#16804a':'#667789','stroke-width':active?4:spine.has(n.id)?2.5:1.5,'stroke-dasharray':pending?'5 3':'none'}));
     g.append(element('text',{y:5,'text-anchor':'middle',fill:'#20252c','font-size':17,'font-weight':600},n.key));
-    g.append(element('text',{y:39,'text-anchor':'middle',fill:'#515c69','font-size':12},`${n.id} · r=${n.rank}${pending?'*':''}`));
+    g.append(element('text',{y:39,'text-anchor':'middle',fill:'#515c69','font-size':12},skew ? n.id : `${n.id} · r=${n.rank}${pending?'*':''}`));
     svg.append(g);
     return g;
   });
-  const duration = animate && from.size && !reducedMotion.matches ? Math.min(700,Number($('speed').value)*0.8) : 0;
   const started = performance.now();
   function paint(now) {
     const t = duration ? Math.min(1,(now-started)/duration) : 1;
@@ -88,6 +109,9 @@ function draw(step, animate = true) {
       views[i].setAttribute('transform',`translate(${point.x} ${point.y})`);
     });
     for (const edge of edgeViews) {
+      const opacity = edge.removed ? 1-eased : edge.added ? eased : 1;
+      edge.line.setAttribute('opacity',opacity);
+      edge.labelElement.setAttribute('opacity',opacity);
       const a=displayed.get(edge.a.node.id),b=displayed.get(edge.b.node.id);
       const dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1;
       const inset=Math.min(24,len/2);
@@ -124,10 +148,10 @@ $('previous').onclick = () => { pause(); position = Math.max(0,position-1); rend
 $('start').onclick = () => { pause(); position=0; render(); };
 $('timeline').oninput = event => { pause(); position=Number(event.target.value); render(false); };
 $('speed').onchange = () => { if (timer) { pause(); play(); } };
-function regenerate() {
+function regenerate(random = Math.random) {
   pause(); position = 0;
   const count = Number($('size').value);
-  steps = LeftistHeap.trace(LeftistHeap.generate(count,'A'),LeftistHeap.generate(count,'B'));
+  steps = heap.trace(heap.generate(count,'A',random),heap.generate(count,'B',random));
   const layouts = steps.map(layout);
   sceneWidth = Math.max(...layouts.map(s=>s.width));
   sceneHeight = Math.max(...layouts.map(s=>s.height));
@@ -135,6 +159,7 @@ function regenerate() {
   $('timeline').max = steps.length-1;
   render();
 }
-$('generate').onclick = regenerate;
-$('size').onchange = regenerate;
-regenerate();
+$('generate').onclick = () => regenerate();
+$('size').onchange = () => regenerate();
+let seed = 1;
+regenerate(skew ? () => ((seed = (1664525*seed + 1013904223) >>> 0) / 2**32) : Math.random);

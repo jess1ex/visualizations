@@ -31,6 +31,6 @@ h1 { margin-bottom: 8px; } button, select, input { font: inherit; } button, sele
 <ol><li>Choose the smaller current root and append it to the merged right path. Its left subtree stays attached. Repeat until one right path ends, then attach the remainder.</li><li>Walk back up the merged path. Check the child ranks, swap children if the left rank is smaller, then update the node's rank. Each action is its own step.</li></ol>
 <p>The intermediate tree can temporarily violate the leftist property. Dashed nodes retain their old ranks until the update step. Selecting the smaller root is distinct from swapping a node’s children.</p>
 </details>
-<script src="heap.js"></script><script src="app.js"></script>
+<script src="heap.js"></script><script src="../heap-view.js"></script>
 </body>
 </html>
